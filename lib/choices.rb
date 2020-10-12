@@ -6,7 +6,14 @@ module Choices
   extend self
 
   def load_settings(filename, env)
-    mash = Hashie::Mash.new(load_settings_hash(filename))
+    if filename.is_a? Array
+      mash = Hashie::Mash.new()
+      filename.each do |file_name|
+        mash.merge!(Hashie::Mash.new(load_settings_hash(filename)))
+      end
+    else
+      mash = Hashie::Mash.new(load_settings_hash(filename))
+    end
 
     with_local_settings(filename, '.local') do |local|
       mash.update local
