@@ -15,7 +15,7 @@ module Choices
       mash = Hashie::Mash.new(load_settings_hash(filename))
     end
 
-    with_local_settings(filename, '.local') do |local|
+    with_local_settings(filename.first, '.local') do |local|
       mash.update local
     end
 
