@@ -9,7 +9,7 @@ module Choices
     if filename.is_a? Array
       mash = Hashie::Mash.new()
       filename.each do |file_name|
-        mash.merge!(Hashie::Mash.new(load_settings_hash(filename)))
+        mash.merge!(Hashie::Mash.new(load_settings_hash(file_name)))
       end
     else
       mash = Hashie::Mash.new(load_settings_hash(filename))
