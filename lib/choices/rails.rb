@@ -40,9 +40,9 @@ module Choices::Rails
     names.each do |name|
       if name.relative?
         root = self.respond_to?(:root) ? self.root : Rails.root
-        file << root + 'config' + name
+        files << root + 'config' + name
       else
-        file << name
+        files << name
       end
     end
 
