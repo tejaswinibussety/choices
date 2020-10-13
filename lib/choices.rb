@@ -7,8 +7,8 @@ module Choices
 
   def load_settings(filename, env)
     byebug
+    mash = Hashie::Mash.new()
     if filename.is_a? Array
-      mash = Hashie::Mash.new()
       filename.each do |file_name|        
         with_settings(file_name) do |patch|
           mash.update patch
