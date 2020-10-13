@@ -21,9 +21,11 @@ module Choices
       mash = Hashie::Mash.new(load_settings_hash(filename))
     end
 
+    puts(mash)
     with_local_settings(filename.first, '.local') do |local|
       mash.update local
     end
+    puts(mash)
 
     mash.fetch(env) do
       raise IndexError, %{Missing key for "#{env}" in `#{filename}'}
@@ -37,6 +39,7 @@ module Choices
 
   def with_local_settings(filename, suffix)
     local_filename = filename.sub(/(\.\w+)?$/, "#{suffix}\\1")
+    puts(local_filename)
     if File.exist? local_filename
       hash = load_settings_hash(local_filename)
       yield hash if hash
