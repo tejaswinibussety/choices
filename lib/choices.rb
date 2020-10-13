@@ -6,6 +6,7 @@ module Choices
   extend self
 
   def load_settings(filename, env)
+    byebug
     if filename.is_a? Array
       mash = Hashie::Mash.new()
       filename.each do |file_name|        
@@ -20,12 +21,15 @@ module Choices
     else
       mash = Hashie::Mash.new(load_settings_hash(filename))
     end
-
+    puts("\n ########################### \n")
     puts(mash)
-    with_local_settings(filename.first, '.local') do |local|
+    puts("\n ########################### \n")
+    with_local_settings(filename, '.local') do |local|
       mash.update local
     end
+    puts("\n ########################### \n")
     puts(mash)
+    puts("\n ########################### \n")
 
     mash.fetch(env) do
       raise IndexError, %{Missing key for "#{env}" in `#{filename}'}
