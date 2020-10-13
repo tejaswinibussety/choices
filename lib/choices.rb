@@ -10,26 +10,16 @@ module Choices
     if filename.is_a? Array
       mash = Hashie::Mash.new()
       filename.each do |file_name|        
-        mash1 = Hashie::Mash.new(load_settings_hash(file_name))
-        mash.merge!(mash1)
-        puts("*****************************")
-        puts(file_name)
-        puts(mash1)
-        puts(mash)
-        puts("*****************************")
+        with_settings(file_name) do |patch|
+          mash.update patch
+        end
       end
     else
       mash = Hashie::Mash.new(load_settings_hash(filename))
+      with_local_settings(filename, '.local') do |local|
+        mash.update local
+      end
     end
-    puts("\n ########################### \n")
-    puts(mash)
-    puts("\n ########################### \n")
-    with_local_settings(filename, '.local') do |local|
-      mash.update local
-    end
-    puts("\n ########################### \n")
-    puts(mash)
-    puts("\n ########################### \n")
 
     mash.fetch(env) do
       raise IndexError, %{Missing key for "#{env}" in `#{filename}'}
@@ -43,10 +33,14 @@ module Choices
 
   def with_local_settings(filename, suffix)
     local_filename = filename.sub(/(\.\w+)?$/, "#{suffix}\\1")
-    puts(local_filename)
-    if File.exist? local_filename
-      hash = load_settings_hash(local_filename)
-      yield hash if hash
+    with_settings(local_filename) do |local|
+      yield local if local
+    end
+  end
+
+  def with_settings(filename)
+    if File.exist? filename
+      load_settings_hash(filename)
     end
   end
 
