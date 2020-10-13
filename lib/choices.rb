@@ -6,12 +6,10 @@ module Choices
   extend self
 
   def load_settings(filename, env)
-    byebug
     mash = Hashie::Mash.new()
     if filename.is_a? Array
       filename.each do |file_name|        
         with_settings(file_name) do |patch|
-          puts patch
           mash.update patch
         end
       end
