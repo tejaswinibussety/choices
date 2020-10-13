@@ -40,7 +40,8 @@ module Choices
 
   def with_settings(filename)
     if File.exist? filename
-      load_settings_hash(filename)
+      hash = load_settings_hash(filename)
+      yield hash if hash
     end
   end
 
