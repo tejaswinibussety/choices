@@ -46,7 +46,6 @@ module Choices::Rails
       end
     end
 
-    puts(files)
     env = Rails.respond_to?(:env) ? Rails.env : RAILS_ENV if env.nil?
 
     settings = Choices.load_settings(files, env)
