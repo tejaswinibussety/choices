@@ -6,23 +6,24 @@ module Choices
   extend self
 
   def load_settings(filename, env)
-    mash = Hashie::Mash.new()
-    if filename.is_a? Array
-      filename.each do |file_name|        
-        with_settings(file_name) do |patch|
-          mash.update patch
-        end
-      end
-    else
-      mash = Hashie::Mash.new(load_settings_hash(filename))
-      with_local_settings(filename, '.local') do |local|
-        mash.update local
-      end
+    mash = Hashie::Mash.new(load_settings_hash(filename))
+
+    with_local_settings(filename, '.local') do |local|
+      mash.update local
     end
 
     mash.fetch(env) do
       raise IndexError, %{Missing key for "#{env}" in `#{filename}'}
     end
+  end
+
+  def load_settings_from_files(filenames, env)
+    mash = Hashie::Mash.new()
+    filenames.each do |file_name|
+      a = load_settings(file_name, env)
+      mash.update(a)
+    end
+    mash
   end
 
   def load_settings_hash(filename)
@@ -32,14 +33,8 @@ module Choices
 
   def with_local_settings(filename, suffix)
     local_filename = filename.sub(/(\.\w+)?$/, "#{suffix}\\1")
-    with_settings(local_filename) do |local|
-      yield local if local
-    end
-  end
-
-  def with_settings(filename)
-    if File.exist? filename
-      hash = load_settings_hash(filename)
+    if File.exist? local_filename
+      hash = load_settings_hash(local_filename)
       yield hash if hash
     end
   end

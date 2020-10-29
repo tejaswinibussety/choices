@@ -48,7 +48,7 @@ module Choices::Rails
 
     env = Rails.respond_to?(:env) ? Rails.env : RAILS_ENV if env.nil?
 
-    settings = Choices.load_settings(files, env)
+    settings = Choices.load_settings_from_files(files, env)
     dynamically_load_settings(settings)
   end
 
